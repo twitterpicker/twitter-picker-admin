@@ -1,0 +1,32 @@
+/* InfoGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    backgroundColor: "#111111",
+    flexGrow: "1",
+    overflowY: "scroll",
+    marginTop: "10px",
+    marginBottom: "10px",
+    paddingBottom: "10px",
+    borderRadius: "10px",
+    border: "2px solid #dbdbdb50",
+}, */
+
+.InfoGrid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: #111111;
+    flex-grow: 1;
+    overflow-y: scroll;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    border: 2px solid #dbdbdb50;
+}
+
+@media screen and (max-width: 768px) {
+    .InfoGrid{
+    grid-template-columns: 1fr;
+
+    }
+  }
