@@ -194,9 +194,12 @@ export default async function handler(request, response) {
     console.log('Received a webhook event, Body : ', request.body);
     if (request.body) {
       await consumeEvent(request.body);
+      // response.send(result);
+      response.send("Webhook event (found body)");
     }
-    // response.send(result);
-    response.send("Webhook event");
+    else {
+      response.send("Webhook event");
+    }
   }
 
 }
