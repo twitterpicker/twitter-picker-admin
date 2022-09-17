@@ -158,15 +158,16 @@ const sendMessage = async (recipientID, text) => {
     'Authorization': header,
     'Content-Type': 'application/json'
   };
+
+  let result = await axios.post(send_message_endpoint, body, { headers });
+  console.log(result);
+  // return result;
+
   return {
     send_message_endpoint,
     header,
     body,
   }
-  console.log("_____________SEND_MESSAGE_____________");
-  let result = await axios.post(send_message_endpoint, body, { headers });
-  console.log(result);
-  return result;
 }
 
 
