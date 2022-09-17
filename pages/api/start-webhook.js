@@ -3,8 +3,6 @@ let crypto = require('crypto');
 const axios = require('axios');
 
 
-
-
 // ________________________ENVIRONMENT_____________________________ //
 let method = 'POST';
 let oauth_version = "1.0";
@@ -60,7 +58,6 @@ function getParameters() {
     oauth_nonce: oauth_nonce,
     oauth_version: oauth_version,
     oauth_token: oauth_token,
-    ngrok_secret: ngrok_secret,
   }
   return parameters;
 }
@@ -160,9 +157,11 @@ const sendMessage = async (recipientID, text) => {
   };
 
   try {
-    await axios.post(send_message_endpoint, body, { headers });
+    let result = await axios.post(send_message_endpoint, body, { headers });
+    console.log(result.data)
   }
   catch (error) {
+    console.log(error.response.data);
     console.log("error sending data to twitter");
   }
   // return object that represents the request that was made
@@ -223,9 +222,17 @@ async function consumeEvent(event) {
       if (recievedMessage) {
         console.log("Recieved A Message");
         let reply = `This is an automated reply. You sent "${messageContent}" to me!`;
+        if(messageContent === "strawberries") reply = "and cigarettes, always test like you";
 
         // reply to the sender from the BOT
         await sendMessage(messageWasSentBy, reply);
+      }
+      else 
+      {
+        // test sending someone else a message here 
+        // let sent = await sendMessage("1566444028748369920", "Test by @Bot account");
+        // console.log(sent);
+        // console.log("Sent A message");
       }
     }
   }
@@ -244,6 +251,7 @@ let startHook = async () => {
     token: oauth_token,
     token_secret: oauth_token_secret,
     env: webhook_environment,
+    ngrok_secret: ngrok_secret,
   });
 
   // SIDENOTE: as the webhook is internally served through a ngrok tunnel
