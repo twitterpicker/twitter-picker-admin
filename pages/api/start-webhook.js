@@ -1,26 +1,23 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-// ________________________SECRETS_&_letANTS_____________________________ //
 let { Autohook } = require('twitter-autohook');
 let crypto = require('crypto');
 const axios = require('axios');
 
 
 
-let webhook_environment = "bot";
-let oauth_consumer_key = "hlQhvMOnBymAMIA6NMEZ5JHVx";
-let oauth_consumer_secret = "V3ildX1OZQZFMoZYufoaWidI3SCoZ8Jt1Ne0cwtTT2F3tVDDKP";
-let oauth_token = "1567795789820481544-FJLN9zWQ0lfJyRBsIH3T4MLQUg4wKG";
-let oauth_token_secret = "zezBgyyKBztbNU9bTTFY1scaAnAUWyyR1dFgoLAhGXeRn";
-let ngrok_secret = "2EtM5M5qIq8uJjl7UOLNjGwMfEU_F7hB1gXuB4hhLP1ypQVp";
 
-
-
-let oauth_version = "1.0";
-let oauth_signature_method = "HMAC-SHA1";
+// ________________________SECRETS_&_ENV_TOKENS_____________________________ //
 let method = 'POST';
-let send_message_endpoint = "https://api.twitter.com/1.1/direct_messages/events/new.json";
+let oauth_version = "1.0";
 let oauth_timestamp = null;
 let oauth_nonce = null;
+let webhook_environment = "bot";
+let oauth_signature_method = "HMAC-SHA1";
+let oauth_consumer_key = "hlQhvMOnBymAMIA6NMEZ5JHVx";
+let ngrok_secret = "2EtM5M5qIq8uJjl7UOLNjGwMfEU_F7hB1gXuB4hhLP1ypQVp";
+let oauth_token = "1567795789820481544-FJLN9zWQ0lfJyRBsIH3T4MLQUg4wKG";
+let oauth_token_secret = "zezBgyyKBztbNU9bTTFY1scaAnAUWyyR1dFgoLAhGXeRn";
+let oauth_consumer_secret = "V3ildX1OZQZFMoZYufoaWidI3SCoZ8Jt1Ne0cwtTT2F3tVDDKP";
+let send_message_endpoint = "https://api.twitter.com/1.1/direct_messages/events/new.json";
 
 
 
@@ -28,20 +25,25 @@ let oauth_nonce = null;
 
 
 
-// ________________________UTILS__________________________________________ //
+// ________________________UTILS FOR SENDING MESSAGE__________________________________________ //
 
 // returns a 32 Character Alpha-numeric string (to be used in authorization process)
 function generateNonce(length) {
   let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   var result = '';
   for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-  console.log("Generated Nonce" + result);
   return result;
 }
+
+
+
 // returns a timestamp (to be used in authorization process)
 function getTimeStamp() {
   return Math.floor(Date.now() / 1000);
 }
+
+
+
 
 // returns the necessary parameters (to be used in authorization process)
 function getParameters() {
@@ -57,18 +59,21 @@ function getParameters() {
     oauth_token: oauth_token,
     ngrok_secret: ngrok_secret,
   }
-  console.log(parameters);
   return parameters;
 }
+
+
+
+
 
 // get auth signatures (uses parameters and follows twitter guideline)
 function getEncodedOAuthSignature(parameters) {
 
-  // step 1 : sort the parameter based on keys
+  // Step 1: sort the parameter based on keys
   let ordered = {}
   Object.keys(parameters).sort().forEach(function (key) { ordered[key] = parameters[key]; });
 
-  // encode the paramters in a string
+  // Step 2: add the paramters in a string
   let encodedParameters = '';
   for (let k in ordered) {
     let encodedValue = escape(ordered[k]);
@@ -79,39 +84,49 @@ function getEncodedOAuthSignature(parameters) {
       encodedParameters += `&${encodedKey}=${encodedValue}`;
     }
   }
-  // encode the baseurl
+
+
+  // Step 3: encode the baseurl and paramter string and create a signature base string
+  // structure: METHOD&URL&PARAMETERS
   let base_url = send_message_endpoint;
   let encodedUrl = encodeURIComponent(base_url);
   encodedParameters = encodeURIComponent(encodedParameters);
-  // structure: METHOD&URL&PARAMETERS
   let signature_base_string = `${method}&${encodedUrl}&${encodedParameters}`
+
+  // step 4 : create a signing key with consumer secret, and token secret
   let secret_key = oauth_consumer_secret;
   let secret_token = oauth_token_secret;
-
-  // created a signing key
   let signing_key = `${encodeURIComponent(secret_key)}&${encodeURIComponent(secret_token)}`;
 
-  // HMAC_SHA1 encoding
+  // HMAC_SHA1 encoding, with signing key and  signature
   let ouath_signature = crypto
     .createHmac('sha1', signing_key)
     .update(signature_base_string)
     .digest('base64');
 
+  // encode oauth signature
   let encoded_oauth_signature = encodeURIComponent(ouath_signature);
-  console.log("Signature : " + encoded_oauth_signature);
   return encoded_oauth_signature;
 }
+
+
+
 // returns auth header
 function getHeader(parameters) {
+
   // signature (calculation)
   let encoded_oauth_signature = getEncodedOAuthSignature(parameters);
-  let header = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_token="${parameters.oauth_token}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${parameters.oauth_timestamp}",oauth_nonce="${parameters.oauth_nonce}",oauth_version="1.0",oauth_signature="${encoded_oauth_signature}"`;
 
-  console.log("Header + " + header);
+  // computed header
+  let header = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_token="${parameters.oauth_token}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${parameters.oauth_timestamp}",oauth_nonce="${parameters.oauth_nonce}",oauth_version="1.0",oauth_signature="${encoded_oauth_signature}"`;
   return header;
 }
+
+
 // returns input (structured to send text to recipient ID)
 function getInput(recipientID, text) {
+
+  // structure according to twitter
   let input = JSON.stringify({
     event: {
       type: "message_create",
@@ -123,14 +138,18 @@ function getInput(recipientID, text) {
     }
   });
   return input;
-
 }
-// ________________________________END OF UTILS _________________________________
+
+
+
+
+// ________________________FUNCTION FORSENDING MESSAGE__________________________________________ //
 
 // sends ${text} to recipeintID and
 const sendMessage = async (recipientID, text) => {
-
+  // caclulated header
   let header = getHeader(getParameters())
+  // calculated payload
   let body = getInput(recipientID, text);
   const headers = {
     'Authorization': header,
@@ -138,14 +157,12 @@ const sendMessage = async (recipientID, text) => {
   };
 
   try {
-    let result = await axios.post(send_message_endpoint, body, { headers });
-    console.log(result.data);
+    await axios.post(send_message_endpoint, body, { headers });
   }
   catch (error) {
-    console.log("error");
+    console.log("error sending data to twitter");
   }
-  // return result;
-
+  // return object that represents the request that was made
   return {
     send_message_endpoint,
     header,
@@ -155,14 +172,19 @@ const sendMessage = async (recipientID, text) => {
 
 
 
-// consumer that handles directing messages
+// consumer that handles directing messages 
 async function consumeEvent(event) {
-  console.log(event);
 
+  // if the event recieved has to do with direct messages, then proceed
   if (event.direct_message_events) {
+
+    // message : the payload in case of recieved and sent message
     let message = event.direct_message_events[0].message_create;
-    // console.log(message);
+    // if there is a payload
+    // in laymen's term : if a message was recieved or sent
     if (message) {
+
+      // initialize values we care about, with NULL
       let shouldBeSentTo = null;
       let messageWasSentTo = null;
       let messageWasSentBy = null;
@@ -170,34 +192,49 @@ async function consumeEvent(event) {
       let URLSOfMessage = null;
       let firstURLOfMessage = null;
 
+      // this is basically our BOT_ID
       shouldBeSentTo = event.for_user_id;
+
+      // to whom the message was sent to
       messageWasSentTo = message.target.recipient_id;
+
+      // who was the message sent by
       messageWasSentBy = message.sender_id;
+
+      // what text was in the message
       messageContent = message.message_data.text;
+
+      // all the url's attached in the message
       URLSOfMessage = message.message_data.entities.urls;
+
+      // if there is list of URL's
       if (URLSOfMessage?.length !== 0) {
-        console.log(JSON.stringify(URLSOfMessage));
+
+        // get the expanded version of the first URL
         firstURLOfMessage = message.message_data.entities.urls[0].expanded_url;
       }
+      // determines if the bot recieved the message payload
       let recievedMessage = (shouldBeSentTo === messageWasSentTo);
+
+      // if bot recieved a message
       if (recievedMessage) {
         console.log("Recieved A Message");
         let reply = `This is an automated reply. You sent "${messageContent}" to me!`;
-        console.log(`sending a reply to : ${messageWasSentBy}`);
+
+        // reply to the sender from the BOT
         await sendMessage(messageWasSentBy, reply);
-      }
-      else {
-        console.log("Sent A Message");
       }
     }
   }
 }
 
 
-// exportable hook function, that starts a webhook subscription (for approx 2 hours)
+// function, that starts a webhook subscription 
 let startHook = async () => {
 
-  let isError = false;
+  let isError = false; // represents the error state
+
+  // create autohook instance
   let webhook = new Autohook({
     consumer_key: oauth_consumer_key,
     consumer_secret: oauth_consumer_secret,
@@ -206,6 +243,9 @@ let startHook = async () => {
     env: webhook_environment,
   });
 
+  // SIDENOTE: as the webhook is internally served through a ngrok tunnel
+  // need ngrok_secret for webhook tunnelF to last indefinitely
+
   try {
     await webhook.removeWebhooks();
   }
@@ -213,9 +253,13 @@ let startHook = async () => {
     console.log("Webhook still running");
     isError = true;
   }
-
+  // if there is not error in removing the hook (i.e.: no hook was running)
   if (isError === false) {
+
+    // call consumer on event
     webhook.on('event', async (event) => await consumeEvent(event));
+
+    // start and subscribe
     await webhook.start();
     await webhook.subscribe({ oauth_token: oauth_token, oauth_token_secret: oauth_token_secret });
   }
@@ -225,11 +269,15 @@ let startHook = async () => {
 
 
 export default async function handler(req, res) {
+
+  let phase = "Starting webhook";
   try {
     await startHook()
   }
   catch (error) {
+    phase = "Error, another webhook running!";
     console.log("Webhook still running");
   }
-  res.status(200).json({ version: "1.0.0" })
+
+  res.status(200).json({ status: phase })
 }
