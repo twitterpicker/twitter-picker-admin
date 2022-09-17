@@ -5,13 +5,16 @@ const axios = require('axios');
 
 
 
-// ________________________SECRETS_&_ENV_TOKENS_____________________________ //
+// ________________________ENVIRONMENT_____________________________ //
 let method = 'POST';
 let oauth_version = "1.0";
 let oauth_timestamp = null;
 let oauth_nonce = null;
 let webhook_environment = "bot";
 let oauth_signature_method = "HMAC-SHA1";
+
+
+// ________________________SECRETS_&_TOKENS_____________________________ //
 let oauth_consumer_key = "hlQhvMOnBymAMIA6NMEZ5JHVx";
 let ngrok_secret = "2EtM5M5qIq8uJjl7UOLNjGwMfEU_F7hB1gXuB4hhLP1ypQVp";
 let oauth_token = "1567795789820481544-FJLN9zWQ0lfJyRBsIH3T4MLQUg4wKG";
@@ -19,7 +22,7 @@ let oauth_token_secret = "zezBgyyKBztbNU9bTTFY1scaAnAUWyyR1dFgoLAhGXeRn";
 let oauth_consumer_secret = "V3ildX1OZQZFMoZYufoaWidI3SCoZ8Jt1Ne0cwtTT2F3tVDDKP";
 let send_message_endpoint = "https://api.twitter.com/1.1/direct_messages/events/new.json";
 
-
+// should be taken from .env files (TO DO)
 
 
 
