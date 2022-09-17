@@ -177,9 +177,10 @@ export default async function handler(request, response) {
     // Send a successful response to Twitter
     response.status(200);
     // Add your logic to process the event
+    let result = await sendMessage("1566444028748369920", "I love you! x 10000");
     console.log('Received a webhook event:', request.body);
-    await consumeEvent(request.body);
-    response.send(1);
+    // await consumeEvent(request.body);
+    response.send(result);
   }
 
 }
