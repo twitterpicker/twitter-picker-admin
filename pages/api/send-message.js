@@ -19,35 +19,6 @@ let oauth_nonce = null;
 
 
 
-// consumer that handles directing messages
-async function consumeEvent(event) {
-  if (event.direct_message_events) {
-    let message = event.direct_message_events[0].message_create;
-    // console.log(message);
-    if (message) {
-      let shouldBeSentTo = messageWasSentTo = messageWasSentBy = messageContent = URLSOfMessage = firstURLOfMessage = null;
-      shouldBeSentTo = event.for_user_id;
-      messageWasSentTo = message.target.recipient_id;
-      messageWasSentBy = message.sender_id;
-      messageContent = message.message_data.text;
-      URLSOfMessage = message.message_data.entities.urls;
-      if (URLSOfMessage?.length !== 0) {
-        console.log(JSON.stringify(URLSOfMessage));
-        firstURLOfMessage = message.message_data.entities.urls[0].expanded_url;
-      }
-      let recievedMessage = (shouldBeSentTo === messageWasSentTo);
-      if (recievedMessage) {
-        console.log("Recieved A Message");
-        let reply = `This is an automated reply. You sent "${messageContent}" to me!`;
-        console.log(`sending a reply to : ${messageWasSentBy}`);
-        await sendMessage(messageWasSentBy, reply);
-      }
-      else {
-        console.log("Sent A Message");
-      }
-    }
-  }
-}
 
 
 
@@ -159,14 +130,50 @@ const sendMessage = async (recipientID, text) => {
     'Content-Type': 'application/json'
   };
 
-  let result = await axios.post(send_message_endpoint, body, { headers });
-  console.log(result);
+  try {
+    let result = await axios.post(send_message_endpoint, body, { headers });
+    console.log(result.data);
+  }
+  catch (error) {
+    console.log("error");
+  }
   // return result;
 
   return {
     send_message_endpoint,
     header,
     body,
+  }
+}
+
+
+// consumer that handles directing messages
+async function consumeEvent(event) {
+  if (event.direct_message_events) {
+    let message = event.direct_message_events[0].message_create;
+    // console.log(message);
+    if (message) {
+      let shouldBeSentTo = messageWasSentTo = messageWasSentBy = messageContent = URLSOfMessage = firstURLOfMessage = null;
+      shouldBeSentTo = event.for_user_id;
+      messageWasSentTo = message.target.recipient_id;
+      messageWasSentBy = message.sender_id;
+      messageContent = message.message_data.text;
+      URLSOfMessage = message.message_data.entities.urls;
+      if (URLSOfMessage?.length !== 0) {
+        console.log(JSON.stringify(URLSOfMessage));
+        firstURLOfMessage = message.message_data.entities.urls[0].expanded_url;
+      }
+      let recievedMessage = (shouldBeSentTo === messageWasSentTo);
+      if (recievedMessage) {
+        console.log("Recieved A Message");
+        let reply = `This is an automated reply. You sent "${messageContent}" to me!`;
+        console.log(`sending a reply to : ${messageWasSentBy}`);
+        await sendMessage(messageWasSentBy, reply);
+      }
+      else {
+        console.log("Sent A Message");
+      }
+    }
   }
 }
 
@@ -183,10 +190,13 @@ export default async function handler(request, response) {
     // Send a successful response to Twitter
     response.status(200);
     // Add your logic to process the event
-    let result = await sendMessage("1566444028748369920", "I love you! x 10000");
-    console.log('Received a webhook event:', request.body);
-    // await consumeEvent(request.body);
-    response.send(result);
+    // let result = await sendMessage("1566444028748369920", "I love you! x 10000");
+    console.log('Received a webhook event, Body : ', request.body);
+    if (request.body) {
+      await consumeEvent(request.body);
+    }
+    // response.send(result);
+    response.send("Webhook event");
   }
 
 }
