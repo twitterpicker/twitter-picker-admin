@@ -221,18 +221,23 @@ async function consumeEvent(event) {
       // if bot recieved a message
       if (recievedMessage) {
         console.log("Recieved A Message");
-        let reply = `This is an automated reply. You sent "${messageContent}" to me!`;
-        if(messageContent === "strawberries") reply = "and cigarettes, always test like you";
+        let reply = `This is an automated reply. You sent "${messageContent}" to me! ${Math.random()}`;
+        if (messageContent === "strawberries") reply = "and cigarettes, always test like you";
 
         // reply to the sender from the BOT
         await sendMessage(messageWasSentBy, reply);
       }
-      else 
-      {
-        // test sending someone else a message here 
-        // let sent = await sendMessage("1566444028748369920", "Test by @Bot account");
-        // console.log(sent);
-        // console.log("Sent A message");
+      else {
+        // test 
+
+        // if I send something to idol bot
+        if (messageWasSentTo === "1001677855661678592") {
+          // send something to picker
+          let sent = await sendMessage("1567795789820481544", "Test by @Bot account");
+          console.log(sent);
+        }
+
+        console.log("Sent A message");
       }
     }
   }
