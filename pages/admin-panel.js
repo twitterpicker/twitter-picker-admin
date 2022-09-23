@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { addTokenToDatabase, deleteTokenFromDatabase, getTokensFromDatabase } from "../database/token";
 import adminResponsiveStyles from '../styles/adminResponsiveStyles.module.css';
 
 const MODALS =
@@ -166,7 +167,7 @@ function Info({
     function getSumOfFetchedRetwitters(tokens) {
         let sum = 0;
         for (let index in tokens) {
-            sum = sum + tokens[index].retweetersFetched;
+            sum = sum + tokens[index].fetched;
         }
         return sum;
     }
@@ -245,13 +246,17 @@ function AddTokenModule({ setSelectedPageModal, setTokens, setRefreshTokens }) {
     async function addToken() {
         if (token === "") return;
 
-        // add token to db
-        setTokens((current) => [...current, {
+        const newToken = {
             token: token,
             requests: 0,
-            retweetersFetched: 0,
-        }]);
-        // setRefreshTokens((current) => !current);
+            fetched: 0,
+        };
+
+        // add token to db
+        await addTokenToDatabase(token, 0, 0);
+        //
+        setTokens((current) => [...current, newToken]);
+        setRefreshTokens((current) => !current);
         setToken("");
     }
 
@@ -289,6 +294,7 @@ function AddTokenModule({ setSelectedPageModal, setTokens, setRefreshTokens }) {
 function Token({ token, index, setRefreshTokens }) {
 
     async function deleteToken() {
+        const {data, error} = await deleteTokenFromDatabase(token.token);
         setRefreshTokens((current) => !current);
     }
 
@@ -306,7 +312,7 @@ function Token({ token, index, setRefreshTokens }) {
                 {token.requests} requests has been made by the token.
             </div>
             <div style={styles.TokenText}>
-                {token.retweetersFetched} retweeters has been fetched by the token.
+                {token.fetched} retweeters has been fetched by the token.
             </div>
             <div
                 style={styles.DeleteBearerButton}
@@ -360,7 +366,8 @@ export default function Admin() {
     const [tokens, setTokens] = useState([]);
 
     async function fetchTokens() {
-        setTokens(tokens);
+        let { data, error } = await getTokensFromDatabase();
+        setTokens(data);
     }
 
     useEffect(() => {
