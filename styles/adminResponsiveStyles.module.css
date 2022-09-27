@@ -14,14 +14,13 @@
 .InfoGrid{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background-color: #111111;
+    background-color: #1d1d1f;
     flex-grow: 1;
     overflow-y: scroll;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-radius: 10px;
-    border: 2px solid #dbdbdb50;
 }
 
 @media screen and (max-width: 768px) {

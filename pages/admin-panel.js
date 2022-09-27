@@ -32,7 +32,7 @@ const styles =
     Info: {
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#050505",
+        backgroundColor: "#1d1d1f",
         height: "100%",
         width: "100%",
         padding: "20px",
@@ -41,7 +41,7 @@ const styles =
 
     InfoBox: {
         borderRadius: "10px",
-        backgroundColor: "#222222",
+        backgroundColor: "#1d1d1f",
         color: "#dbdbdb",
         minWidth: "98%",
         maxWidth: "100%",
@@ -54,37 +54,38 @@ const styles =
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
+        //  12px 12px 16px 0 #00000040, -2px -2px 2px 0 #ffffff1a
+        boxShadow: "inset 8px 8px 16px 0 #00000066, inset -2px -2px 6px 0 #ffffff1a"
     },
 
     Tokens: {
         display: "flex",
         flexDirection: "column",
         padding: "20px",
-        backgroundColor: "#050505",
+        backgroundColor: "#1d1d1f",
         height: "100%",
         width: "100%",
     },
 
     AddTokenModule: {
         padding: "10px",
-        backgroundColor: "#111111",
+        backgroundColor: "#1d1d1f",
         width: "100%",
         marginBottom: "10px",
         borderRadius: "10px",
-        border: "2px solid #dbdbdb50",
     },
 
     Token: {
-
         padding: "20px",
-        backgroundColor: "#111111",
+        backgroundColor: "#1d1d1f",
         minWidth: "50%",
         maxWidth: "100%",
         width: "max-content",
         borderRadius: "10px",
         margin: "auto",
         marginTop: "20px",
-        border: "2px solid #dbdbdb50",
+        marginBottom: "20px",
+        boxShadow: "8px 8px 16px 0 #00000066, -2px -2px 6px 0 #ffffff1a"
     },
 
     TokenText: {
@@ -93,38 +94,36 @@ const styles =
         width: "max-content",
         padding: "10px",
         marginTop: "5px",
-        backgroundColor: "#111111",
+        backgroundColor: "#1d1d1f",
         color: "#dbdbdb",
-        // border: "2px solid #dbdbdb50",
         borderRadius: "5px",
         outline: "none",
         wordBreak: "break-all"
     },
 
-
-
     BearerInput: {
+        borderWidth: "0px",
         width: "100%",
         padding: "10px",
         marginTop: "10px",
-        backgroundColor: "#222222",
+        backgroundColor: "#1d1d1f",
         color: "#dbdbdb",
-        border: "2px solid black",
         borderRadius: "5px",
         outline: "none",
         textAlign: "center",
+        boxShadow: "inset 8px 8px 16px 0 #00000066, inset -2px -2px 6px 0 #ffffff1a"
     },
 
     AddBearerButton: {
         width: "max-content",
-        backgroundColor: "#131313",
+        backgroundColor: "#1d1d1f",
         color: "#dbdbdb",
         margin: "auto",
         padding: "10px",
         marginTop: "10px",
         borderRadius: "5px",
-        border: "1px solid #dbdbdb30",
-        cursor: "pointer"
+        cursor: "pointer",
+        boxShadow: "6px 6px 8px 0 #00000040, -2px -2px 2px 0 #ffffff1a"
     },
 
     TokenContainer:
@@ -134,14 +133,14 @@ const styles =
 
     DeleteBearerButton: {
         width: "max-content",
-        backgroundColor: "#131313",
+        backgroundColor: "#1d1d1f",
         color: "#dbdbdb",
         margin: "auto",
         padding: "10px",
         marginTop: "10px",
         borderRadius: "5px",
-        border: "1px solid #dbdbdb30",
-        cursor: "pointer"
+        cursor: "pointer",
+        boxShadow: "6px 6px 8px 0 #00000040, -2px -2px 2px 0 #ffffff1a"
     },
     InfoText:
     {
@@ -205,7 +204,7 @@ function Info({
                 <div style={styles.InfoBox}>
                     <h3 style={styles.InfoText}>  {"We currently have "} </h3>
                     <h1 style={styles.InfoText}>  {numberOfServiceAccounts} </h1>
-                    <h3 style={styles.InfoText}>  {"accounts running the microservice."} </h3>
+                    <h3 style={styles.InfoText}>  {"tokens running the microservice."} </h3>
                 </div>
 
                 {/* <div style={styles.InfoBox}>
@@ -289,18 +288,18 @@ function Token({ token, index, setRefreshTokens }) {
 
     return (
         <div style={styles.Token}>
-            <div style={styles.TokenText}>
-                token no: {index}
+            <div style={{...styles.TokenText, marginLeft: 0}}>
+                Token no: {index}
             </div>
             <div style={styles.TokenText}>
                 Bearer Token : {token.token}
             </div>
-            <div style={styles.TokenText}>
+            {/* <div style={styles.TokenText}>
                 {token.requests} requests has been made by the token.
             </div>
             <div style={styles.TokenText}>
                 {token.fetched} retweeters has been fetched by the token.
-            </div>
+            </div> */}
             <div
                 style={styles.DeleteBearerButton}
                 onClick={async () => { await deleteToken() }}

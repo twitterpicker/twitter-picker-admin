@@ -22,11 +22,3 @@ body,
 #__next>div {
   height: 100%;
 }
-
-.infogrid {
-  display: none;
-
-  @media (max-width: 768px) {
-    background-color: rebeccapurple;
-  }
-}
