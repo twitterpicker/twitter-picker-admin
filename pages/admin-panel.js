@@ -39,15 +39,14 @@ const styles =
         paddingTop: "30px",
     },
 
-    InfoBall: {
-        borderRadius: "50%",
+    InfoBox: {
+        borderRadius: "10px",
         backgroundColor: "#222222",
         color: "#dbdbdb",
-        height: "max-content",
-        minWidth: "90%",
-        maxWidth: "90%",
+        minWidth: "98%",
+        maxWidth: "100%",
+        maxHeight: "98%",
         padding: "10px",
-        aspectRatio: "1",
         marginLeft: "auto",
         marginRight: "auto",
         marginTop: "10px",
@@ -198,40 +197,28 @@ function Info({
             </h2>
             <div className={adminResponsiveStyles.InfoGrid}>
 
-
-
-                <div style={styles.InfoBall}>
-                    <h2 style={styles.InfoText}> {"last request made by"} </h2>
-                    <h3 style={{ wordBreak: "break-all", textAlign: "center" }}>{`"ahjsjdkjasdkMnasjhdjahsdashdkashdkashdsdkjhaskdkahsdkjhaskdjhaksdhkjashdkashkdjh"`} </h3>
-                </div>
-
-                <div style={styles.InfoBall}>
+                <div style={styles.InfoBox}>
                     <h1 style={styles.InfoText}>  {"Picker Admin Panel"} </h1>
                 </div>
 
-                <div style={styles.InfoBall}>
-                    <h3 style={styles.InfoText}>  {"current session"} </h3>
-                    <h1 style={styles.InfoText}> {"1/01/20020 - 1/01/2020"} </h1>
-                </div>
 
-
-                <div style={styles.InfoBall}>
+                <div style={styles.InfoBox}>
                     <h3 style={styles.InfoText}>  {"We currently have "} </h3>
                     <h1 style={styles.InfoText}>  {numberOfServiceAccounts} </h1>
                     <h3 style={styles.InfoText}>  {"accounts running the microservice."} </h3>
                 </div>
 
-                <div style={styles.InfoBall}>
+                {/* <div style={styles.InfoBox}>
                     <h3 style={styles.InfoText}>  {"we currently made "} </h3>
                     <h1 style={styles.InfoText}> {totalRequests} out of {requestMaximum} </h1>
                     <h3 style={styles.InfoText}>  {"requests per month"} </h3>
                 </div>
 
-                <div style={styles.InfoBall}>
+                <div style={styles.InfoBox}>
                     <h3 style={styles.InfoText}>  {"we currently fetched"} </h3>
                     <h1 style={styles.InfoText}> {totalFetched} out of {retweeterMaximum} </h1>
                     <h3 style={styles.InfoText}>  {"retweeter's info in this session"} </h3>
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -13,7 +13,7 @@
 
 .InfoGrid{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     background-color: #111111;
     flex-grow: 1;
     overflow-y: scroll;
